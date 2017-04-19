@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="whitecanvas.js"></script>
+       <link rel="stylesheet" type="text/css" href="whitecanvas.css">
+    </head>
+    <body>
+        <div id = 'canvasDiv'>
+        <canvas id="mySurface" class="mySurface" width="1000" height="650"></canvas>  
+        </div>
+        <div id = 'buttonDiv' class="buttonDiv">
+        <button id="0" onclick="designSurface.addImage('Images/0.jpg',25 ,25 ,225 ,125)">addFirstImage </button><br> 
+        <button id="1" onclick="designSurface.addImage('Images/1.jpg',300 ,25 ,225 ,125)">addSecondImage</button><br>
+        <button id="2" onclick="designSurface.addImage('Images/2.jpg',25 ,175 ,225 ,125)">addThirdImage</button><br>
+        <button id="3" onclick="designSurface.addImage('Images/3.jpg',300 ,175 ,225 ,125)">addFourthImage</button><br>
+        <button id="4" onclick="designSurface.addImage('Images/4.jpg',450 ,100 ,225 ,125)">addfifthImage</button><br><br>
+        <button id="5" onclick="designSurface.bringToFront()">Bring To Front</button><br><br>
+        <button id="6" onclick="designSurface.bringToBack()">Send To Back</button>
+        <div id = "groupDiv" class="menu">Group</div>
+        <div id = "ungroupDiv" class="menu">Ungroup</div>
+
+        <script>
+            designSurface.initialize({
+                readOnlyMode : false,
+                displayCanvas :"#mySurface",
+                groupMenu : "#groupDiv",
+                ungroupMenu : "#ungroupDiv",
+                cornerWidth : 15,
+                borderWidth : 2,
+                selectBoxColor : "rgba(0,191,255,0.5)",
+                dragBoxColor : "#000000",
+                showGrid : true,
+                gridLineGap : 17,
+                gridLineColor : '#dcdcdc',
+                cornerCircleRadius : 6,
+                groupSelectionBoxColour : "#F38787"
+            });
+        </script>
+    </body>
+</html>
