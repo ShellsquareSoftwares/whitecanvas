@@ -1,0 +1,29 @@
+.mysurface{
+    border : solid 1px #A9A9A9;
+    z-index : 0;
+    position: absolute;
+}
+
+.buttonDiv{
+float: right;
+}
+
+.menu{
+    width:80px;
+    height : 25px;
+    padding-left: 8px;
+    padding-top: 5px;
+    font-size: 15;
+    background: #000;
+    color: #fff;
+    position:absolute;
+    z-index: 999999;
+    display: none;
+    background-color: #FCFCFC;
+    color: #000;
+}
+
+.menu:hover{
+    background-color: #D3D3D3;
+        color: #000;
+}
