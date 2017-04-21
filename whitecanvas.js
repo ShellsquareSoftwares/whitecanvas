@@ -1,1 +1,947 @@
-var designSurface=function(){function e(){$canvas=$(canvasIdentifier)[0],ungroupMenu=$(ungroupMenu),groupMenu=$(groupMenu)}var i,t,n,o=[],r=[],h=0,l=0,s=!1,a=!1,c="null",d=0,u=0,g=function(i){showGrid=i.showGrid||!0,readOnly=i.readOnlyMode||!1,canvasIdentifier=i.displayCanvas,ungroupMenu=i.ungroupMenu,groupMenu=i.groupMenu,border=i.cornerWidth||15,selectionColor=i.selectBoxColor||"rgba(0,191,255,0.5)",borderWidth=i.borderWidth||2,dragBoxColor=i.dragBoxColor||"#00000",gridLineGap=i.gridLineGap||17,gridLineColor=i.gridLineColor||"#dcdcdc",arcRadius=i.cornerCircleRadius||6,groupBoxColor=i.groupSelectionBoxColour||"rgba(0,191,255,0.5)",e(),f(),H(),p()},f=function(){var e=document.createElement("canvas");e.style.position="absolute",e.style.zIndex=1,e.height=$canvas.height,e.width=$canvas.width,document.body.appendChild(e);var i=document.createElement("canvas");i.style.position="absolute",i.style.zIndex=2,i.height=$canvas.height,i.width=$canvas.width,document.body.appendChild(i);var t=document.createElement("canvas");t.style.position="absolute",t.style.zIndex=-1,t.height=$canvas.height,t.width=$canvas.width,document.body.appendChild(t),$gridSurface=t,$selectionSurface=e,$dragSurface=i},p=function(){readOnly||($dragSurface.addEventListener("mousedown",function(){m(),h=0},!1),$dragSurface.addEventListener("mousemove",function(){Y(),h=1},!1),$dragSurface.addEventListener("mouseout",function(){S(),h=1},!1),$dragSurface.addEventListener("mouseup",function(){v()},!1),$dragSurface.addEventListener("contextmenu",function(){event.preventDefault()},!1))},v=function(){0===h&&1===event.which?X():3===event.which&&(l=0,L()),1===h&&1===event.which,S()},w=function(e,i,t,n,r){var h=$("<img src="+e+">"),l={};l.image=h,l.id="IMG"+d,l.positionX=i,l.positionY=t,l.width=n,l.height=r,l.childElements=null,l.parentElement=null,o.push(l),d++;var s=$canvas.getContext("2d");h.load(function(){s.drawImage(this,i,t,n,r)})},X=function(){var e=[],r=0;l=0;var h=$selectionSurface.getContext("2d");h.clearRect(0,0,$selectionSurface.width,$selectionSurface.height);var s=D($dragSurface,event);i=endX=s.x,t=endY=s.y;for(var a=o.length,c=0;a>c;c++)null===o[c].parentElement&&i<o[c].positionX+o[c].width&&i>o[c].positionX&&t<o[c].positionY+o[c].height&&t>o[c].positionY&&(n=c,e[0]=o[c],z(),r=1);0===r&&(e.length=0)},m=function(){var e=$selectionSurface.getContext("2d"),h=!1;groupMenu.hide(),ungroupMenu.hide(),event.preventDefault(),l=1;var a=D($dragSurface,event);if(i=a.x,t=a.y,s=!1,r.length>1)for(var d=r.length-1;d>-1;d--)if(i<r[d].positionX+r[d].width+8&&i>r[d].positionX-8&&t<r[d].positionY+r[d].height+8&&t>r[d].positionY-8){for(var u=0;u<o.length;u++)o[u].id===r[d].id&&(c=b(i,t),n=u);return s=!0,void(h=!0)}if(!h)for(var g=o.length-1;g>-1;g--)if(null===o[g].parentElement){if(i<o[g].positionX+o[g].width+8&&i>o[g].positionX-8&&t<o[g].positionY+o[g].height+8&&t>o[g].positionY-8)return n=g,s=!0,r.length=0,r[0]=o[g],c=b(i,t),e.clearRect(0,0,$selectionSurface.width,$selectionSurface.height),void z();e.clearRect(0,0,$selectionSurface.width,$selectionSurface.height),r.length=0}},Y=function(){if(event.preventDefault(),1==l)if(s&&"null"==c)P();else if(s&&"null"!==c){var e=D($dragSurface,event),i=e.x,t=e.y;y[c](i,t),I();var r=$selectionSurface.getContext("2d");r.clearRect(0,0,$selectionSurface.width,$selectionSurface.height),z()}else{$dragSurface.style.cursor="crosshair";var e=D($dragSurface,event);endX=e.x,endY=e.y,E(endX,endY)}else for(var e=D($dragSurface,event),h=e.x,a=e.y,d=o.length,u=d-1;u>-1;u--){if(h<o[u].positionX+o[u].width+border/2&&h>o[u].positionX-border/2&&a<o[u].positionY+o[u].height+border/2&&a>o[u].positionY-border/2)return n=u,void G(h,a);$dragSurface.style.cursor="default"}},S=function(){event.preventDefault();var e=$dragSurface.getContext("2d");$dragSurface.style.cursor="default",l=0,e.clearRect(0,0,$dragSurface.width,$dragSurface.height),s=!1},E=function(e,n){var h=0;r=[];var l=$dragSurface.getContext("2d"),s=$selectionSurface.getContext("2d"),c=e-i,d=n-t,u=0>c?c:0,g=0>d?d:0,f=Math.abs(c),p=Math.abs(d);l.clearRect(0,0,$dragSurface.width,$dragSurface.height),l.beginPath(),l.rect(i+u,t+g,f,p),l.strokeStyle=dragBoxColor,l.setLineDash([15,10]),l.stroke();for(var v=0;v<o.length;v++)if(null===o[v].parentElement){var w=o[v].positionX,X=o[v].positionY,m=o[v].positionX+o[v].width,Y=o[v].positionY+o[v].height;i+u+f>w&&m>i+u&&t+g+p>X&&Y>t+g&&(r[h]=o[v],h++,a=!0,s.clearRect(0,0,$selectionSurface.width,$selectionSurface.height),z())}},P=function(){var e=D($dragSurface,event);endX=e.x,endY=e.y;for(var n=endX-i,o=endY-t,h=0;h<r.length;h++){r[h].positionX+=n,r[h].positionY+=o,null!==r[h].childElements&&R(r[h].childElements,n,o);var l=$selectionSurface.getContext("2d");l.clearRect(0,0,$selectionSurface.width,$selectionSurface.height),z()}I(),i=endX,t=endY},R=function(e,i,t){for(var n=0;n<e.length;n++)null!==e[n].childElements?(e[n].positionX+=i,e[n].positionY+=t,R(e[n].childElements,i,t)):(e[n].positionX+=i,e[n].positionY+=t)},b=function(e,i){var t=o[n].positionX,r=o[n].positionY,h=o[n].positionX+o[n].width,l=o[n].positionY+o[n].height,s=e>t-border/2&&e<t+border/2,a=e<h+border/2&&e>h-border/2,c=i>r-border/2&&i<r+border/2,d=i<l+border/2&&i>l-border/2;return c&&s?"TL":c&&a?"TR":d&&s?"BL":d&&a?"BR":c?"T":a?"R":d?"B":s?"L":"null"},y={T:function(e,i){for(var t=o[n].positionY-i,h=t/o[n].height*100,l=0;l<r.length;l++)if(r[l].childElements){var s=r[l].positionY-r[l].height/100*h;M(r[l].childElements,e,s,"T",l)}for(var a=0;a<r.length;a++)r[a].positionY-=r[a].height/100*h,r[a].height+=r[a].height/100*h},B:function(e,i){for(var t=o[n].positionY+o[n].height-i,h=t/o[n].height*100,l=0;l<r.length;l++)if(r[l].childElements){var s=r[l].positionY+r[l].height-r[l].height/100*h;M(r[l].childElements,e,s,"B",l)}for(var a=0;a<r.length;a++)r[a].height-=r[a].height/100*h},L:function(e,i){for(var t=o[n].positionX-e,h=t/o[n].width*100,l=0;l<r.length;l++)if(r[l].childElements){var s=r[l].positionX-r[l].width/100*h;M(r[l].childElements,s,i,"L",l)}for(var a=0;a<r.length;a++)r[a].positionX-=r[a].width/100*h,r[a].width+=r[a].width/100*h},R:function(e,i){for(var t=o[n].positionX+o[n].width-e,h=t/o[n].width*100,l=0;l<r.length;l++)if(r[l].childElements){var s=r[l].positionX+r[l].width-r[l].width/100*h;M(r[l].childElements,s,i,"R",l)}for(var a=0;a<r.length;a++)r[a].width-=r[a].width/100*h},TR:function(e,i){for(var t=o[n].positionY-i,h=t/o[n].height*100,l=e-(o[n].positionX+o[n].width),s=l/o[n].width*100,a=0;a<r.length;a++)if(r[a].childElements){var c=r[a].positionX+r[a].width-r[a].width/100*-s,d=r[a].positionY-r[a].height/100*h;M(r[a].childElements,c,d,"TR",a)}for(var u=0;u<r.length;u++)r[u].positionY-=r[u].height/100*h,r[u].height+=r[u].height/100*h,r[u].width+=r[u].width/100*s},BR:function(e,i){for(var t=i-(o[n].positionY+o[n].height),h=t/o[n].height*100,l=e-(o[n].positionX+o[n].width),s=l/o[n].width*100,a=0;a<r.length;a++)if(r[a].childElements){var c=r[a].positionX+r[a].width-r[a].width/100*-s,d=r[a].positionY+r[a].height-r[a].height/100*-h;M(r[a].childElements,c,d,"BR",a)}for(var u=0;u<r.length;u++)r[u].height+=r[u].height/100*h,r[u].width+=r[u].width/100*s},BL:function(e,i){for(var t=i-(o[n].positionY+o[n].height),h=t/o[n].height*100,l=o[n].positionX-e,s=l/o[n].width*100,a=0;a<r.length;a++)if(r[a].childElements){var c=r[a].positionX-r[a].width/100*s,d=r[a].positionY+r[a].height-r[a].height/100*-h;M(r[a].childElements,c,d,"BL",a)}for(var u=0;u<r.length;u++)r[u].height+=r[u].height/100*h,r[u].positionX-=r[u].width/100*s,r[u].width+=r[u].width/100*s},TL:function(e,i){for(var t=o[n].positionX-e,h=t/o[n].width*100,l=o[n].positionY-i,s=l/o[n].height*100,a=0;a<r.length;a++)if(r[a].childElements){var c=r[a].positionX-r[a].width/100*h,d=r[a].positionY-r[a].height/100*s;M(r[a].childElements,c,d,"TL",a)}for(var u=0;u<r.length;u++)r[u].positionY-=r[u].height/100*s,r[u].height+=r[u].height/100*s,r[u].positionX-=r[u].width/100*h,r[u].width+=r[u].width/100*h}},M=function(e,i,t,n,o){for(var h=0;h<e.length;h++){if("L"===n){var l=r[o].positionX,s=r[o].width,a=l-i,c=a/s*100;effectivePX=l+s-e[h].positionX;var d=e[h].width/100*c,u=effectivePX/100*c;e[h].positionX-=u,e[h].width+=d,null!==e[h].childElements&&M(e[h].childElements,i,t,n,o)}if("R"===n){var l=r[o].positionX,s=r[o].width,a=l+s-i,c=a/s*100;effectivePX=e[h].positionX-l;var d=e[h].width/100*c,u=effectivePX/100*c;e[h].width-=d,e[h].positionX-=u,null!==e[h].childElements&&M(e[h].childElements,i,t,n,o)}if("B"===n){var g=r[o].positionY,f=r[o].height,p=g+f-t,v=p/f*100,w=e[h].positionY-g,X=e[h].height/100*v,m=w/100*v;e[h].height-=X,e[h].positionY-=m,null!==e[h].childElements&&M(e[h].childElements,i,t,n,o)}if("T"===n){var g=r[o].positionY,f=r[o].height,p=g-t,v=p/f*100;w=g+f-e[h].positionY;var X=e[h].height/100*v,m=w/100*v;e[h].height+=X,e[h].positionY-=m,null!==e[h].childElements&&M(e[h].childElements,i,t,n,o)}if("BR"===n){var g=r[o].positionY,f=r[o].height,p=t-(g+f),v=p/f*100;w=e[h].positionY-g;var X=e[h].height/100*v,m=w/100*v;e[h].height+=X,e[h].positionY+=m;var l=r[o].positionX,s=r[o].width,a=i-(l+s),c=a/s*100;effectivePX=e[h].positionX-l;var d=e[h].width/100*c,u=effectivePX/100*c;e[h].width+=d,e[h].positionX+=u,null!==e[h].childElements&&M(e[h].childElements,i,t,n,o)}if("BL"===n){var g=r[o].positionY,f=r[o].height,p=g+f-t,v=p/f*100;w=e[h].positionY-g;var X=e[h].height/100*v,m=w/100*v;e[h].height-=X,e[h].positionY-=m;var l=r[o].positionX,s=r[o].width,a=l-i,c=a/s*100;effectivePX=l+s-e[h].positionX;var d=e[h].width/100*c,u=effectivePX/100*c;e[h].positionX-=u,e[h].width+=d,null!==e[h].childElements&&M(e[h].childElements,i,t,n,o)}if("TL"===n){var g=r[o].positionY,f=r[o].height,p=g-t,v=p/f*100;w=g+f-e[h].positionY;var X=e[h].height/100*v,m=w/100*v;e[h].height+=X,e[h].positionY-=m;var l=r[o].positionX,s=r[o].width,a=l-i,c=a/s*100;effectivePX=l+s-e[h].positionX;var d=e[h].width/100*c,u=effectivePX/100*c;e[h].positionX-=u,e[h].width+=d,null!==e[h].childElements&&M(e[h].childElements,i,t,n,o)}if("TR"===n){var g=r[o].positionY,f=r[o].height,p=g-t,v=p/f*100;w=g+f-e[h].positionY;var X=e[h].height/100*v,m=w/100*v;e[h].height+=X,e[h].positionY-=m;var l=r[o].positionX,s=r[o].width,a=l+s-i,c=a/s*100;effectivePX=e[h].positionX-l;var d=e[h].width/100*c,u=effectivePX/100*c;e[h].width-=d,e[h].positionX-=u,null!==e[h].childElements&&M(e[h].childElements,i,t,n,o)}}},x=function(){for(var e=0,i=o.length,t=0;t<r.length;t++)for(var n=0;i-e>n;n++)r[t].id===o[n].id&&(o.push(o[n]),o.splice(n,1),e++);I()},C=function(){for(var e=(o.length,0);e<r.length;e++)for(var i=0;i<o.length;i++)r[e].id===o[i].id&&(o.splice(0,0,o[i]),o.splice(i+1,1));I()},L=function(e){groupPresent=!1,event.preventDefault();var i=event.pageX,t=event.pageY;groupMenu.css({top:t+1,left:i+1}),r.length<2?ungroupMenu.css({top:t+1,left:i+1}):ungroupMenu.css({top:t+31,left:i+1});var n=groupMenu.width(),o=groupMenu.height(),h=$canvas.width,l=$canvas.height;i+n>h&&(ungroupMenu.css({left:i-n}),contextMenu.css({left:i-n})),t+o>l&&(ungroupMenu.css({top:t-o}),contextMenu.css({top:t-o}));for(var s=0;s<r.length;s++)null!==r[s].childElements&&(groupPresent=!0);r.length>1&&(groupMenu.show(),groupMenu.unbind().click(function(){B(),ungroupMenu.hide()})),groupPresent&&(ungroupMenu.show(),ungroupMenu.unbind().click(function(){T(e)}))},B=function(){var e=0,i={};dimensions={};var t=r.length;W(dimensions),i.id="GRP"+u,i.positionX=dimensions.X,i.positionY=dimensions.Y,i.width=dimensions.W,i.height=dimensions.H,i.childElements=[],i.parentElement=null,o.push(i),u++;for(var n=0;t>n;n++)r[n].parentElement=o[o.length-1],o[o.length-1].childElements[e]=r[n],e++;r=[o[o.length-1]],groupMenu.hide();var h=$selectionSurface.getContext("2d");h.clearRect(0,0,$selectionSurface.width,$selectionSurface.height),z()},T=function(){for(var e=0,i=$selectionSurface.getContext("2d"),t=0;t<r.length;t++)if(null!==r[t].childElements)for(var n=0;n<o.length;n++)if(o[n].id===r[t].id){for(var h=0;h<o[n].childElements.length;h++)o[n].childElements[h].parentElement=null;delete o[n],e++}o.sort(),o.splice(o.length-e,e),ungroupMenu.hide(),r.length=0,i.clearRect(0,0,$selectionSurface.width,$selectionSurface.height)},I=function(){var e=$canvas.getContext("2d"),i=o.length;e.clearRect(0,0,$canvas.width,$canvas.height);for(var t=0;i>t;t++)if(null===o[t].parentElement){var n=o[t];n.width<=5&&(n.width=5),n.height<=5&&(n.height=5),null!==n.childElements?_(n.childElements):e.drawImage(n.image[0],n.positionX,n.positionY,n.width,n.height)}},_=function(e){for(var i=$canvas.getContext("2d"),t=0;t<e.length;t++)null!==e[t].childElements?_(e[t].childElements):(e[t].width<=3&&(e[t].width=3),e[t].height<=3&&(e[t].height=3),i.drawImage(e[t].image[0],e[t].positionX,e[t].positionY,e[t].width,e[t].height))},W=function(e){_allPosX=[],_allPosY=[],_allPosW=[],_allPosH=[];for(var i=0;i<r.length;i++)_allPosX.push(r[i].positionX),_allPosY.push(r[i].positionY),_allPosW.push(r[i].positionX+r[i].width),_allPosH.push(r[i].positionY+r[i].height);return _allPosX.sort(function(e,i){return e-i}),_allPosY.sort(function(e,i){return e-i}),_allPosW.sort(function(e,i){return e-i}),_allPosH.sort(function(e,i){return e-i}),e.X=_allPosX[0]-10,e.Y=_allPosY[0]-10,e.W=_allPosW[_allPosW.length-1]-e.X+10,e.H=_allPosH[_allPosH.length-1]-e.Y+10,e},z=function(){for(var e=$selectionSurface.getContext("2d"),i=0;i<r.length;i++)if(null!==r[i].childElements)k(i);else if(r[i].width>=2&&r[i].height>=2){var t=r[i].positionX,n=r[i].positionY,o=r[i].width,h=r[i].height,l=r[i].positionX+r[i].width,s=r[i].positionY+r[i].height,a=t+(l-t)/2,c=n+(s-n)/2,d=border-5;e.beginPath(),e.lineWidth=borderWidth,e.strokeStyle=selectionColor,e.setLineDash([10,10]),e.fillStyle=selectionColor,e.strokeRect(t,n,o,h),e.fillRect(t-d/2,n-d/2,d,d),e.fillRect(l-d/2,n-d/2,d,d),e.fillRect(l-d/2,s-d/2,d,d),e.fillRect(t-d/2,s-d/2,d,d),e.fillRect(a-d/2,n-d/2,d,d),e.fillRect(a-d/2,s-d/2,d,d),e.fillRect(t-d/2,c-d/2,d,d),e.fillRect(l-d/2,c-d/2,d,d)}},k=function(e){var i=$selectionSurface.getContext("2d"),t=r[e];t.width>=2&&t.height>=2&&(i.beginPath(),i.lineWidth=borderWidth,i.strokeStyle=groupBoxColor,i.strokeRect(t.positionX,t.positionY,t.width,t.height),i.fillStyle=groupBoxColor,i.closePath(),i.beginPath(),i.arc(t.positionX,t.positionY,arcRadius,0,2*Math.PI),i.fill(),i.closePath(),i.beginPath(),i.arc(t.positionX,t.positionY+t.height,arcRadius,0,2*Math.PI),i.fill(),i.closePath(),i.beginPath(),i.arc(t.positionX+t.width,t.positionY,arcRadius,0,2*Math.PI),i.fill(),i.closePath(),i.beginPath(),i.arc(t.positionX+t.width,t.positionY+t.height,arcRadius,0,2*Math.PI),i.fill(),i.closePath(),i.beginPath(),i.arc(t.positionX,t.positionY+t.height/2,arcRadius,0,2*Math.PI),i.fill(),i.closePath(),i.beginPath(),i.arc(t.positionX+t.width,t.positionY+t.height/2,arcRadius,0,2*Math.PI),i.fill(),i.closePath(),i.beginPath(),i.arc(t.positionX+t.width/2,t.positionY,arcRadius,0,2*Math.PI),i.fill(),i.closePath(),i.beginPath(),i.arc(t.positionX+t.width/2,t.positionY+t.height,arcRadius,0,2*Math.PI),i.fill(),i.closePath())},G=function(e,i){var t=b(e,i);"TL"==t&&($dragSurface.style.cursor="nw-resize"),"TR"==t&&($dragSurface.style.cursor="ne-resize"),"BL"==t&&($dragSurface.style.cursor="sw-resize"),"BR"==t&&($dragSurface.style.cursor="se-resize"),"T"==t&&($dragSurface.style.cursor="n-resize"),"R"==t&&($dragSurface.style.cursor="e-resize"),"B"==t&&($dragSurface.style.cursor="s-resize"),"L"==t&&($dragSurface.style.cursor="w-resize"),"null"==t&&($dragSurface.style.cursor="move")},D=function(e,i){var t=e.getBoundingClientRect();return{x:i.clientX-t.left,y:i.clientY-t.top}},H=function(){if(showGrid)for(var e=$gridSurface.getContext("2d"),i=$gridSurface.width,t=$gridSurface.height,n=.5;i>n||t>n;n+=gridLineGap)e.moveTo(n,0),e.lineTo(n,t),e.moveTo(0,n),e.lineTo(i,n),e.lineWidth=1,e.strokeStyle=gridLineColor,e.stroke()};return{initialize:g,addImage:w,bringToFront:x,bringToBack:C}}();
+var designSurface = function () {
+    var _elementsArray = [];
+    var _activeElements = [];
+    var _check = 0;
+    var _startX, _startY;
+    var _mouseIsDown = 0;
+    var _mouseInsideElement = false;
+    var _multiDragIdentifier = false;
+    var _resizeAnchorPoint = "null";
+    var _arrayIndex;
+    var Num = 0;
+    var grpNum = 0;
+    var initialize = function (settings) {
+        showGrid = settings.showGrid || true;
+        readOnly = settings.readOnlyMode || false;
+        canvasIdentifier = settings.displayCanvas;
+        ungroupMenu = settings.ungroupMenu;
+        groupMenu = settings.groupMenu;
+        border = settings.cornerWidth || 15;
+        selectionColor = settings.selectBoxColor || "rgba(0,191,255,0.5)";
+        borderWidth = settings.borderWidth || 2;
+        dragBoxColor = settings.dragBoxColor || "#00000";
+        gridLineGap = settings.gridLineGap || 17;
+        gridLineColor = settings.gridLineColor || '#dcdcdc';
+        arcRadius = settings.cornerCircleRadius || 6;
+        groupBoxColor = settings.groupSelectionBoxColour || "rgba(0,191,255,0.5)";
+        _loadDom();
+        _defineGhostCanvas();
+        _gridLines();
+        _bindEvents();
+    }
+    function _loadDom() {
+        $canvas = $(canvasIdentifier)[0];
+        ungroupMenu = $(ungroupMenu);
+        groupMenu = $(groupMenu);
+    }
+    var _defineGhostCanvas = function () {
+        var clickLayerIdentifier = document.createElement('canvas');
+        clickLayerIdentifier.style.position = "absolute";
+        clickLayerIdentifier.style.zIndex = 1;
+        clickLayerIdentifier.height = $canvas.height;
+        clickLayerIdentifier.width = $canvas.width;
+        document.body.appendChild(clickLayerIdentifier);
+        var dragLayerIdentifier = document.createElement('canvas');
+        dragLayerIdentifier.style.position = "absolute";
+        dragLayerIdentifier.style.zIndex = 2;
+        dragLayerIdentifier.height = $canvas.height;
+        dragLayerIdentifier.width = $canvas.width;
+        document.body.appendChild(dragLayerIdentifier);
+        var gridLayerIdentifier = document.createElement('canvas');
+        gridLayerIdentifier.style.position = "absolute";
+        gridLayerIdentifier.style.zIndex = -1;
+        gridLayerIdentifier.height = $canvas.height;
+        gridLayerIdentifier.width = $canvas.width;
+        document.body.appendChild(gridLayerIdentifier);
+        $gridSurface = gridLayerIdentifier;
+        $selectionSurface = clickLayerIdentifier;
+        $dragSurface = dragLayerIdentifier;
+    }
+    var _bindEvents = function () {
+        if(!readOnly){
+            $dragSurface.addEventListener("mousedown", function () {
+                _dragInitiation();
+                _check = 0;
+            }, false);
+            $dragSurface.addEventListener("mousemove", function () {
+                _dragExecution();
+                _check = 1;
+            }, false);
+            $dragSurface.addEventListener("mouseout", function () {
+                _dragTermination();
+                _check = 1;
+            }, false);
+            $dragSurface.addEventListener("mouseup", function () {
+                _eventRecognizer();
+            }, false);
+            $dragSurface.addEventListener("contextmenu", function () {
+                event.preventDefault();
+            }, false);
+        }
+    }
+    var _eventRecognizer = function () {
+        if (_check === 0 && event.which === 1) {
+            _hitImage();
+        }
+        else if (event.which === 3) {
+            _mouseIsDown = 0;
+            _groupOrUngroupSelctor();
+        }
+        if (_check === 1 && event.which === 1 || 3) {
+            _dragTermination();
+        }
+    }
+
+    var addImage = function (id, x, y, width, height) {
+        var $img = $('<img src=' + id + '>');
+        var imageInfo = {};
+        imageInfo.image = $img;
+        imageInfo.id = "IMG" + Num;
+        imageInfo.positionX = x;
+        imageInfo.positionY = y;
+        imageInfo.width = width;
+        imageInfo.height = height;
+        imageInfo.childElements = null;
+        imageInfo.parentElement = null;
+        _elementsArray.push(imageInfo);
+        Num++;
+        var ctx = $canvas.getContext("2d");
+        $img.load(function () {
+            ctx.drawImage(this, x, y, width, height);
+        });
+    }
+    var _hitImage = function () {
+        var _activeElements = [];
+        var flag = 0;
+        _mouseIsDown = 0;
+        var sctx = $selectionSurface.getContext("2d");
+        sctx.clearRect(0, 0, $selectionSurface.width, $selectionSurface.height);
+        var pos = _getMousePos($dragSurface, event);
+        _startX = endX = pos.x;
+        _startY = endY = pos.y;
+        var len = _elementsArray.length;
+        for (var i = 0; i < len; i++) {
+            if (_elementsArray[i].parentElement === null) {
+                if ((_startX < _elementsArray[i].positionX + _elementsArray[i].width) &&
+                    (_startX > _elementsArray[i].positionX) &&
+                    (_startY < _elementsArray[i].positionY + _elementsArray[i].height) &&
+                    (_startY > _elementsArray[i].positionY)) {
+                    _arrayIndex = i;
+                    _activeElements[0] = _elementsArray[i];
+                    _addStroke();
+                    flag = 1;
+                }
+            }
+        }
+        if (flag === 0) {
+            _activeElements.length = 0;
+        }
+    }
+    var _dragInitiation = function () {
+        var sctx = $selectionSurface.getContext("2d");
+        var flag = false;
+        groupMenu.hide();
+        ungroupMenu.hide();
+        event.preventDefault();
+        _mouseIsDown = 1;
+        var pos = _getMousePos($dragSurface, event);
+        _startX = pos.x;
+        _startY = pos.y;
+        _mouseInsideElement = false;
+        if (_activeElements.length >1) {
+            for (var i = _activeElements.length - 1; i > -1; i--) {
+                if ((_startX < _activeElements[i].positionX + _activeElements[i].width + 8) &&
+                    (_startX > _activeElements[i].positionX - 8) &&
+                    (_startY < _activeElements[i].positionY + _activeElements[i].height + 8) &&
+                    (_startY > _activeElements[i].positionY - 8)) {
+                    for (var l = 0; l < _elementsArray.length; l++) {
+                        if (_elementsArray[l].id === _activeElements[i].id) {
+                            _resizeAnchorPoint = _hitResizeAnchor(_startX, _startY);
+                            _arrayIndex = l;
+                        }
+                    }
+                    _mouseInsideElement = true;
+                    flag = true;
+                    return;
+                }
+            }
+        }
+        if (!flag) {
+            for (var j = _elementsArray.length - 1; j > -1; j--) {
+                if (_elementsArray[j].parentElement === null) {
+                    if ((_startX < _elementsArray[j].positionX + _elementsArray[j].width + 8) &&
+                        (_startX > _elementsArray[j].positionX - 8) &&
+                        (_startY < _elementsArray[j].positionY + _elementsArray[j].height + 8) &&
+                        (_startY > _elementsArray[j].positionY - 8)) {
+                        _arrayIndex = j;
+                        _mouseInsideElement = true;
+                        _activeElements.length = 0;
+                        _activeElements[0] = _elementsArray[j];
+                        _resizeAnchorPoint = _hitResizeAnchor(_startX, _startY);
+                        sctx.clearRect(0, 0, $selectionSurface.width, $selectionSurface.height);
+                        _addStroke();
+                        return;
+                    }
+                    else {
+                        sctx.clearRect(0, 0, $selectionSurface.width, $selectionSurface.height);
+                        _activeElements.length = 0;
+                    }
+                }
+            }
+        }
+    }
+    var _dragExecution = function () {
+        event.preventDefault();
+        if (_mouseIsDown == 1) {
+            if (_mouseInsideElement && _resizeAnchorPoint == "null") {
+                _ImageDrag();
+            }
+            else if (_mouseInsideElement && (_resizeAnchorPoint !== "null")) {
+                var pos = _getMousePos($dragSurface, event);
+                var _startX = pos.x;
+                var _startY = pos.y;
+                _resizeFunctions[_resizeAnchorPoint](_startX, _startY);
+                _redrawImage();
+                var sctx = $selectionSurface.getContext("2d");
+                sctx.clearRect(0, 0, $selectionSurface.width, $selectionSurface.height);
+                _addStroke();
+            }
+            else {
+                $dragSurface.style.cursor = "crosshair";
+                var pos = _getMousePos($dragSurface, event);
+                endX = pos.x;
+                endY = pos.y;
+                _multiSelect(endX, endY);
+            }
+        }
+        else {
+            var pos = _getMousePos($dragSurface, event);
+            var hoverX = pos.x;
+            var hoverY = pos.y;
+            var Len = _elementsArray.length;
+            for (var i = Len - 1; i > -1; i--) {
+                if ((hoverX < _elementsArray[i].positionX + _elementsArray[i].width + (border / 2)) &&
+                    (hoverX > _elementsArray[i].positionX - (border / 2)) &&
+                    (hoverY < _elementsArray[i].positionY + _elementsArray[i].height + (border / 2)) &&
+                    (hoverY > _elementsArray[i].positionY - (border / 2))) {
+                    _arrayIndex = i;
+                    _hoverProperty(hoverX, hoverY);
+                    return;
+                }
+                else {
+                    $dragSurface.style.cursor = "default";
+                }
+            }
+        }
+    }
+    var _dragTermination = function () {
+        event.preventDefault();
+        var dctx = $dragSurface.getContext("2d");
+        $dragSurface.style.cursor = "default";
+        _mouseIsDown = 0;
+        dctx.clearRect(0, 0, $dragSurface.width, $dragSurface.height);
+        _mouseInsideElement = false;
+    }
+    var _multiSelect = function (endX, endY) {
+        var p = 0;
+        _activeElements = [];
+        var atleastOneGroup = false;
+        var dctx = $dragSurface.getContext("2d");
+        var sctx = $selectionSurface.getContext("2d");
+        var w = endX - _startX;
+        var h = endY - _startY;
+        var offsetX = (w < 0) ? w : 0;
+        var offsetY = (h < 0) ? h : 0;
+        var width = Math.abs(w);
+        var height = Math.abs(h);
+        dctx.clearRect(0, 0, $dragSurface.width, $dragSurface.height);
+        dctx.beginPath();
+        dctx.rect(_startX + offsetX, _startY + offsetY, width, height);
+        dctx.strokeStyle = dragBoxColor;
+        dctx.setLineDash([15, 10]);
+        dctx.stroke();
+        for (var j = 0; j < _elementsArray.length; j++) {
+            if (_elementsArray[j].parentElement === null) {
+                var x1 = _elementsArray[j].positionX;
+                var y1 = _elementsArray[j].positionY;
+                var x2 = _elementsArray[j].positionX + _elementsArray[j].width;
+                var y2 = _elementsArray[j].positionY + _elementsArray[j].height;
+                if (x1 < (_startX + offsetX + width) &&
+                    x2 > (_startX + offsetX) &&
+                    y1 < (_startY + offsetY + height) &&
+                    y2 > _startY + offsetY) {
+                    _activeElements[p] = _elementsArray[j];
+                    p++;
+                    _multiDragIdentifier = true;
+                    sctx.clearRect(0, 0, $selectionSurface.width, $selectionSurface.height);
+                    _addStroke();
+                }
+            }
+        }
+    }
+    var _ImageDrag = function () {
+        var pos = _getMousePos($dragSurface, event);
+        endX = pos.x;
+        endY = pos.y;
+        var dx = endX - _startX;
+        var dy = endY - _startY;
+        for (var j = 0; j < _activeElements.length; j++) {
+            _activeElements[j].positionX += dx;
+            _activeElements[j].positionY += dy;
+            if (_activeElements[j].childElements !== null) {
+                updateInnerArrayPositions(_activeElements[j].childElements, dx, dy);
+            }
+            var sctx = $selectionSurface.getContext("2d");
+            sctx.clearRect(0, 0, $selectionSurface.width, $selectionSurface.height);
+            _addStroke();
+        }
+        _redrawImage();
+        _startX = endX;
+        _startY = endY;
+    }
+    var updateInnerArrayPositions = function (Arr, dx, dy) {
+        for (var m = 0; m < Arr.length; m++) {
+            if (Arr[m].childElements !== null) {
+                Arr[m].positionX += dx;
+                Arr[m].positionY += dy;
+                updateInnerArrayPositions(Arr[m].childElements, dx, dy);
+            }
+            else {
+                Arr[m].positionX += dx;
+                Arr[m].positionY += dy;
+            }
+        }
+    }
+    var _hitResizeAnchor = function (x, y) {
+        var x1 = _elementsArray[_arrayIndex].positionX;
+        var y1 = _elementsArray[_arrayIndex].positionY;
+        var x2 = _elementsArray[_arrayIndex].positionX + _elementsArray[_arrayIndex].width;
+        var y2 = _elementsArray[_arrayIndex].positionY + _elementsArray[_arrayIndex].height;
+        var isLeft = (x > x1 - (border / 2) && x < x1 + (border / 2));
+        var isRight = (x < x2 + (border / 2) && x > x2 - (border / 2));
+        var isTop = (y > y1 - (border / 2) && y < y1 + (border / 2));
+        var isBottom = (y < y2 + (border / 2) && y > y2 - (border / 2));
+        if (isTop && isLeft) {
+            return ("TL");
+        }
+        if (isTop && isRight) {
+            return ("TR");
+        }
+        if (isBottom && isLeft) {
+            return ("BL");
+        }
+        if (isBottom && isRight) {
+            return ("BR");
+        }
+        if (isTop) {
+            return ("T");
+        }
+        if (isRight) {
+            return ("R");
+        }
+        if (isBottom) {
+            return ("B");
+        }
+        if (isLeft) {
+            return ("L");
+        } else {
+            return ("null");
+        }
+    }
+    var _resizeFunctions = {
+        T: function (x, y) {
+            var dy = _elementsArray[_arrayIndex].positionY - y;
+            var percentage = (dy / _elementsArray[_arrayIndex].height) * 100;
+            for (var j = 0; j < _activeElements.length; j++) {
+                if (_activeElements[j].childElements) {
+                    var dummyY = (_activeElements[j].positionY) - ((_activeElements[j].height / 100) * percentage);
+                    _innerGroupResizing(_activeElements[j].childElements, x, dummyY, 'T', j);
+                }
+            }
+            for (var i = 0; i < _activeElements.length; i++) {
+                _activeElements[i].positionY -= (_activeElements[i].height / 100) * percentage;
+                _activeElements[i].height += (_activeElements[i].height / 100) * percentage;
+            }
+        },
+        B: function (x, y) {
+            var dy = (_elementsArray[_arrayIndex].positionY + _elementsArray[_arrayIndex].height) - y;
+            var percentage = (dy / _elementsArray[_arrayIndex].height) * 100;
+            for (var j = 0; j < _activeElements.length; j++) {
+                if (_activeElements[j].childElements) {
+                    var dummyY = (_activeElements[j].positionY + _activeElements[j].height) - (((_activeElements[j].height) / 100) * percentage);
+                    _innerGroupResizing(_activeElements[j].childElements, x, dummyY, 'B', j);
+                }
+            }
+            for (var i = 0; i < _activeElements.length; i++) {
+                _activeElements[i].height -= (_activeElements[i].height / 100) * percentage;
+            }
+        },
+        L: function (x, y) {
+            var dx = _elementsArray[_arrayIndex].positionX - x;
+            var percentage = (dx / _elementsArray[_arrayIndex].width) * 100;
+            for (var j = 0; j < _activeElements.length; j++) {
+                if (_activeElements[j].childElements) {
+                    var dummyX = (_activeElements[j].positionX) - ((_activeElements[j].width / 100) * percentage);
+                    _innerGroupResizing(_activeElements[j].childElements, dummyX, y, 'L', j);
+                }
+            }
+            for (var i = 0; i < _activeElements.length; i++) {
+                _activeElements[i].positionX -= (_activeElements[i].width / 100) * percentage;
+                _activeElements[i].width += (_activeElements[i].width / 100) * percentage;
+            }
+        },
+        R: function (x, y) {
+            var dx = (_elementsArray[_arrayIndex].positionX + _elementsArray[_arrayIndex].width) - x;
+            var percentage = (dx / _elementsArray[_arrayIndex].width) * 100;
+            for (var j = 0; j < _activeElements.length; j++) {
+                if (_activeElements[j].childElements) {
+                    var dummyX = (_activeElements[j].positionX + _activeElements[j].width) - (((_activeElements[j].width) / 100) * percentage);
+                    _innerGroupResizing(_activeElements[j].childElements, dummyX, y, 'R', j);
+                }
+            }
+            for (var i = 0; i < _activeElements.length; i++) {
+                _activeElements[i].width -= (_activeElements[i].width / 100) * percentage;
+            }
+        },
+        TR: function (x, y) {
+            var dy = _elementsArray[_arrayIndex].positionY - y;
+            var yPercentage = (dy / _elementsArray[_arrayIndex].height) * 100;
+            var dx = x - (_elementsArray[_arrayIndex].positionX + _elementsArray[_arrayIndex].width);
+            var xPercentage = (dx / _elementsArray[_arrayIndex].width) * 100;
+            for (var j = 0; j < _activeElements.length; j++) {
+                if (_activeElements[j].childElements) {
+                    var dummyX = (_activeElements[j].positionX + _activeElements[j].width) - (((_activeElements[j].width) / 100) * (-xPercentage));
+                    var dummyY = (_activeElements[j].positionY) - ((_activeElements[j].height / 100) * yPercentage);
+                    _innerGroupResizing(_activeElements[j].childElements, dummyX, dummyY, 'TR', j);
+                }
+            }
+            for (var i = 0; i < _activeElements.length; i++) {
+                _activeElements[i].positionY -= (_activeElements[i].height / 100) * yPercentage;
+                _activeElements[i].height += (_activeElements[i].height / 100) * yPercentage;
+                _activeElements[i].width += (_activeElements[i].width / 100) * xPercentage;
+            }
+        },
+        BR: function (x, y) {
+            var dy = y - (_elementsArray[_arrayIndex].positionY + _elementsArray[_arrayIndex].height);
+            var yPercentage = (dy / _elementsArray[_arrayIndex].height) * 100;
+            var dx = x - (_elementsArray[_arrayIndex].positionX + _elementsArray[_arrayIndex].width);
+            var xPercentage = (dx / _elementsArray[_arrayIndex].width) * 100;
+            for (var j = 0; j < _activeElements.length; j++) {
+                if (_activeElements[j].childElements) {
+                    var dummyX = (_activeElements[j].positionX + _activeElements[j].width) - (((_activeElements[j].width) / 100) * (-xPercentage));
+                    var dummyY = (_activeElements[j].positionY + _activeElements[j].height) - (((_activeElements[j].height) / 100) * (-yPercentage));
+                    _innerGroupResizing(_activeElements[j].childElements, dummyX, dummyY, 'BR', j);
+                }
+            }
+            for (var i = 0; i < _activeElements.length; i++) {
+                _activeElements[i].height += (_activeElements[i].height / 100) * yPercentage;
+                _activeElements[i].width += (_activeElements[i].width / 100) * xPercentage;
+            }
+        },
+        BL: function (x, y) {
+            var dy = y - (_elementsArray[_arrayIndex].positionY + _elementsArray[_arrayIndex].height);
+            var yPercentage = (dy / _elementsArray[_arrayIndex].height) * 100;
+            var dx = _elementsArray[_arrayIndex].positionX - x;
+            var xPercentage = (dx / _elementsArray[_arrayIndex].width) * 100;
+            for (var j = 0; j < _activeElements.length; j++) {
+                if (_activeElements[j].childElements) {
+                    var dummyX = (_activeElements[j].positionX) - ((_activeElements[j].width / 100) * xPercentage);
+                    var dummyY = (_activeElements[j].positionY + _activeElements[j].height) - (((_activeElements[j].height) / 100) * (-yPercentage));
+                    _innerGroupResizing(_activeElements[j].childElements, dummyX, dummyY, 'BL', j);
+                }
+            }
+            for (var i = 0; i < _activeElements.length; i++) {
+                _activeElements[i].height += (_activeElements[i].height / 100) * yPercentage;
+                _activeElements[i].positionX -= (_activeElements[i].width / 100) * xPercentage;
+                _activeElements[i].width += (_activeElements[i].width / 100) * xPercentage;
+            }
+        },
+        TL: function (x, y) {
+            var dx = _elementsArray[_arrayIndex].positionX - x;
+            var xPercentage = (dx / _elementsArray[_arrayIndex].width) * 100;
+            var dy = _elementsArray[_arrayIndex].positionY - y;
+            var yPercentage = (dy / _elementsArray[_arrayIndex].height) * 100;
+            for (var j = 0; j < _activeElements.length; j++) {
+                if (_activeElements[j].childElements) {
+                    var dummyX = (_activeElements[j].positionX) - ((_activeElements[j].width / 100) * xPercentage);
+                    var dummyY = (_activeElements[j].positionY) - ((_activeElements[j].height / 100) * yPercentage);
+                    _innerGroupResizing(_activeElements[j].childElements, dummyX, dummyY, 'TL', j);
+                }
+            }
+            for (var i = 0; i < _activeElements.length; i++) {
+                _activeElements[i].positionY -= (_activeElements[i].height / 100) * yPercentage;
+                _activeElements[i].height += (_activeElements[i].height / 100) * yPercentage;
+                _activeElements[i].positionX -= (_activeElements[i].width / 100) * xPercentage;
+                _activeElements[i].width += (_activeElements[i].width / 100) * xPercentage;
+            }
+        },
+    };
+    var _innerGroupResizing = function (resizeArray, x, y, P, arr) {
+        for (var l = 0; l < resizeArray.length; l++) {
+            if (P === 'L') {
+                var newX = _activeElements[arr].positionX;
+                var newWidth = _activeElements[arr].width;
+                var dx = newX - x;
+                var percentageX = (dx / (newWidth)) * 100;
+                effectivePX = (newX + newWidth) - (resizeArray[l].positionX);
+                var widthDifference = (resizeArray[l].width / 100) * percentageX;
+                var xDifference = (effectivePX / 100) * percentageX;
+                resizeArray[l].positionX -= xDifference;
+                resizeArray[l].width += widthDifference;
+                if (resizeArray[l].childElements !== null) {
+                    _innerGroupResizing(resizeArray[l].childElements, x, y, P, arr);
+                }
+            }
+            if (P === 'R') {
+                var newX = _activeElements[arr].positionX;
+                var newWidth = _activeElements[arr].width;
+                var dx = newX + newWidth - x;
+                var percentageX = (dx / (newWidth)) * 100;
+                effectivePX = resizeArray[l].positionX - newX;
+                var widthDifference = (resizeArray[l].width / 100) * percentageX;
+                var xDifference = (effectivePX / 100) * percentageX;
+                resizeArray[l].width -= widthDifference;
+                resizeArray[l].positionX -= xDifference;
+                if (resizeArray[l].childElements !== null) {
+                    _innerGroupResizing(resizeArray[l].childElements, x, y, P, arr);
+                }
+            }
+            if (P === 'B') {
+                var newY = _activeElements[arr].positionY;
+                var newHeight = _activeElements[arr].height;
+                var dy = newY + newHeight - y;
+                var percentageY = (dy / newHeight) * 100;
+                var effectivePY = resizeArray[l].positionY - newY;
+                var heightDifference = (resizeArray[l].height / 100) * percentageY;
+                var yDifference = (effectivePY / 100) * percentageY;
+                resizeArray[l].height -= heightDifference;
+                resizeArray[l].positionY -= yDifference;
+                if (resizeArray[l].childElements !== null) {
+                    _innerGroupResizing(resizeArray[l].childElements, x, y, P, arr);
+                }
+            }
+            if (P === 'T') {
+                var newY = _activeElements[arr].positionY;
+                var newHeight = _activeElements[arr].height;
+                var dy = newY - y;
+                var percentageY = (dy / newHeight) * 100;
+                effectivePY = (newY + newHeight) - resizeArray[l].positionY;
+                var heightDifference = (resizeArray[l].height / 100) * percentageY;
+                var yDifference = (effectivePY / 100) * percentageY;
+                resizeArray[l].height += heightDifference;
+                resizeArray[l].positionY -= yDifference;
+                if (resizeArray[l].childElements !== null) {
+                    _innerGroupResizing(resizeArray[l].childElements, x, y, P, arr);
+                }
+            }
+            if (P === 'BR') {
+                var newY = _activeElements[arr].positionY;
+                var newHeight = _activeElements[arr].height;
+                var dy = y - (newY + newHeight);
+                var percentageY = (dy / newHeight) * 100;
+                effectivePY = resizeArray[l].positionY - newY;
+                var heightDifference = (resizeArray[l].height / 100) * percentageY;
+                var yDifference = (effectivePY / 100) * percentageY;
+                resizeArray[l].height += heightDifference;
+                resizeArray[l].positionY += yDifference;
+                var newX = _activeElements[arr].positionX;
+                var newWidth = _activeElements[arr].width;
+                var dx = x - (newX + newWidth);
+                var percentageX = (dx / (newWidth)) * 100;
+                effectivePX = resizeArray[l].positionX - newX;
+                var widthDifference = (resizeArray[l].width / 100) * percentageX;
+                var xDifference = (effectivePX / 100) * percentageX;
+                resizeArray[l].width += widthDifference;
+                resizeArray[l].positionX += xDifference;
+                if (resizeArray[l].childElements !== null) {
+                    _innerGroupResizing(resizeArray[l].childElements, x, y, P, arr);
+                }
+            }
+            if (P === 'BL') {
+                var newY = _activeElements[arr].positionY;
+                var newHeight = _activeElements[arr].height;
+                var dy = newY + newHeight - y;
+                var percentageY = (dy / newHeight) * 100;
+                effectivePY = resizeArray[l].positionY - newY;
+                var heightDifference = (resizeArray[l].height / 100) * percentageY;
+                var yDifference = (effectivePY / 100) * percentageY;
+                resizeArray[l].height -= heightDifference;
+                resizeArray[l].positionY -= yDifference;
+                var newX = _activeElements[arr].positionX;
+                var newWidth = _activeElements[arr].width;
+                var dx = newX - x;
+                var percentageX = (dx / (newWidth)) * 100;
+                effectivePX = (newX + newWidth) - (resizeArray[l].positionX);
+                var widthDifference = (resizeArray[l].width / 100) * percentageX;
+                var xDifference = (effectivePX / 100) * percentageX;
+                resizeArray[l].positionX -= xDifference;
+                resizeArray[l].width += widthDifference;
+                if (resizeArray[l].childElements !== null) {
+                    _innerGroupResizing(resizeArray[l].childElements, x, y, P, arr);
+                }
+            }
+            if (P === 'TL') {
+                var newY = _activeElements[arr].positionY;
+                var newHeight = _activeElements[arr].height;
+                var dy = newY - y;
+                var percentageY = (dy / newHeight) * 100;
+                effectivePY = (newY + newHeight) - resizeArray[l].positionY;
+                var heightDifference = (resizeArray[l].height / 100) * percentageY;
+                var yDifference = (effectivePY / 100) * percentageY;
+                resizeArray[l].height += heightDifference;
+                resizeArray[l].positionY -= yDifference;
+                var newX = _activeElements[arr].positionX;
+                var newWidth = _activeElements[arr].width;
+                var dx = newX - x;
+                var percentageX = (dx / (newWidth)) * 100;
+                effectivePX = (newX + newWidth) - (resizeArray[l].positionX);
+                var widthDifference = (resizeArray[l].width / 100) * percentageX;
+                var xDifference = (effectivePX / 100) * percentageX;
+                resizeArray[l].positionX -= xDifference;
+                resizeArray[l].width += widthDifference;
+                if (resizeArray[l].childElements !== null) {
+                    _innerGroupResizing(resizeArray[l].childElements, x, y, P, arr);
+                }
+            }
+            if (P === 'TR') {
+                var newY = _activeElements[arr].positionY;
+                var newHeight = _activeElements[arr].height;
+                var dy = newY - y;
+                var percentageY = (dy / newHeight) * 100;
+                effectivePY = (newY + newHeight) - resizeArray[l].positionY;
+                var heightDifference = (resizeArray[l].height / 100) * percentageY;
+                var yDifference = (effectivePY / 100) * percentageY;
+                resizeArray[l].height += heightDifference;
+                resizeArray[l].positionY -= yDifference;
+                var newX = _activeElements[arr].positionX;
+                var newWidth = _activeElements[arr].width;
+                var dx = newX + newWidth - x;
+                var percentageX = (dx / (newWidth)) * 100;
+                effectivePX = resizeArray[l].positionX - newX;
+                var widthDifference = (resizeArray[l].width / 100) * percentageX;
+                var xDifference = (effectivePX / 100) * percentageX;
+                resizeArray[l].width -= widthDifference;
+                resizeArray[l].positionX -= xDifference;
+                if (resizeArray[l].childElements !== null) {
+                    _innerGroupResizing(resizeArray[l].childElements, x, y, P, arr);
+                }
+            }
+        }
+    }
+    var bringToFront = function () {
+        var count = 0;
+        var elen = _elementsArray.length;
+        for (var j = 0; j < _activeElements.length; j++) {
+            for (var k = 0; k < elen - count; k++) {
+                if (_activeElements[j].id === _elementsArray[k].id) {
+                    _elementsArray.push(_elementsArray[k]);
+                    _elementsArray.splice(k, 1);
+                    count++;
+                }
+            }
+        }
+        _redrawImage();
+    }
+    var bringToBack = function () {
+        var len = _elementsArray.length;
+        for (var i = 0; i < _activeElements.length; i++) {
+            for (var l = 0; l < _elementsArray.length; l++) {
+                if (_activeElements[i].id === _elementsArray[l].id) {
+                    _elementsArray.splice(0, 0, _elementsArray[l]);
+                    _elementsArray.splice(l + 1, 1);
+                }
+            }
+        }
+        _redrawImage();
+    }
+    var _groupOrUngroupSelctor = function (groupId) {
+        groupPresent = false;
+        event.preventDefault();
+        var pageX = event.pageX;
+        var pageY = event.pageY;
+        groupMenu.css({ top: pageY + 1, left: pageX + 1 });
+        if (_activeElements.length < 2) {
+            ungroupMenu.css({ top: pageY + 01, left: pageX + 1 });
+        }
+        else {
+            ungroupMenu.css({ top: pageY + 31, left: pageX + 1 });
+        }
+        var mwidth = groupMenu.width();
+        var mheight = groupMenu.height();
+        var screenWidth = $canvas.width;
+        var screenHeight = $canvas.height;
+        if (pageX + mwidth > screenWidth) {
+            ungroupMenu.css({ left: pageX - mwidth });
+            contextMenu.css({ left: pageX - mwidth });
+        }
+        if (pageY + mheight > screenHeight) {
+            ungroupMenu.css({ top: pageY - mheight });
+            contextMenu.css({ top: pageY - mheight });
+        }
+        for (var g = 0; g < _activeElements.length; g++) {
+            if (_activeElements[g].childElements !== null) {
+                groupPresent = true;
+            }
+        }
+        if (_activeElements.length > 1) {
+            groupMenu.show();
+            groupMenu.unbind().click(function () {
+                _groupingFunction();
+                ungroupMenu.hide();
+            });
+        }
+        if (groupPresent) {
+            ungroupMenu.show();
+            ungroupMenu.unbind().click(function () {
+                _ungroupingFunction(groupId);
+            });
+        }
+    }
+    var _groupingFunction = function () {
+        var s = 0;
+        var group = {};
+        dimensions = {};
+        var leng = _activeElements.length;
+        _calculateGroupStroke(dimensions);
+        group.id = "GRP" + grpNum;
+        group.positionX = dimensions.X;
+        group.positionY = dimensions.Y;
+        group.width = dimensions.W;
+        group.height = dimensions.H;
+        group.childElements = [];
+        group.parentElement = null;
+        _elementsArray.push(group);
+        grpNum++;
+        for (var k = 0; k < leng; k++) {
+            _activeElements[k].parentElement = _elementsArray[_elementsArray.length - 1];
+            _elementsArray[_elementsArray.length - 1].childElements[s] = _activeElements[k];
+            s++;
+        }
+        _activeElements = [_elementsArray[_elementsArray.length - 1]];
+        groupMenu.hide();
+        var sctx = $selectionSurface.getContext("2d");
+        sctx.clearRect(0, 0, $selectionSurface.width, $selectionSurface.height);
+        _addStroke();
+    }
+    var _ungroupingFunction = function () {
+        var n = 0;
+        var sctx = $selectionSurface.getContext("2d");
+        for (var j = 0; j < _activeElements.length; j++) {
+            if (_activeElements[j].childElements !== null) {
+                for (var k = 0; k < _elementsArray.length; k++) {
+                    if (_elementsArray[k].id === _activeElements[j].id) {
+                        for (var l = 0; l < _elementsArray[k].childElements.length; l++) {
+                            _elementsArray[k].childElements[l].parentElement = null;
+                        }
+                        delete _elementsArray[k];
+                        n++;
+                    }
+                }
+            }
+        }
+        _elementsArray.sort();
+        _elementsArray.splice(_elementsArray.length - n, n);
+        ungroupMenu.hide();
+        _activeElements.length = 0;
+        sctx.clearRect(0, 0, $selectionSurface.width, $selectionSurface.height);
+    }
+    var _redrawImage = function () {
+        var ctx = $canvas.getContext("2d");
+        var len = _elementsArray.length;
+        ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+        for (var i = 0; i < len; i++) {
+            if (_elementsArray[i].parentElement === null) {
+                var r = _elementsArray[i];
+                if (r.width <= 5) {
+                    r.width = 5;
+                }
+                if (r.height <= 5) {
+                    r.height = 5;
+                }
+                if (r.childElements !== null) {
+                    _drawInnerImages(r.childElements);
+                }
+                else {
+
+                    ctx.drawImage(r.image[0], r.positionX, r.positionY, r.width, r.height);
+                }
+            }
+        }
+    }
+    var _drawInnerImages = function (Arrays) {
+        var ctx = $canvas.getContext("2d");
+        for (var k = 0; k < Arrays.length; k++) {
+            if (Arrays[k].childElements !== null) {
+                _drawInnerImages(Arrays[k].childElements);
+            }
+            else {
+                if (Arrays[k].width <= 3) {
+                    Arrays[k].width = 3;
+                }
+                if (Arrays[k].height <= 3) {
+                    Arrays[k].height = 3;
+                }
+                ctx.drawImage(Arrays[k].image[0], Arrays[k].positionX, Arrays[k].positionY, Arrays[k].width, Arrays[k].height);
+            }
+        }
+    }
+    var _calculateGroupStroke = function (dimensions) {
+        _allPosX = [];
+        _allPosY = [];
+        _allPosW = [];
+        _allPosH = [];
+        for (var i = 0; i < _activeElements.length; i++) {
+            _allPosX.push(_activeElements[i].positionX);
+            _allPosY.push(_activeElements[i].positionY);
+            _allPosW.push(_activeElements[i].positionX + _activeElements[i].width);
+            _allPosH.push(_activeElements[i].positionY + _activeElements[i].height);
+        }
+        _allPosX.sort(function (a, b) { return a - b });
+        _allPosY.sort(function (a, b) { return a - b });
+        _allPosW.sort(function (a, b) { return a - b });
+        _allPosH.sort(function (a, b) { return a - b });
+        dimensions.X = _allPosX[0] - 10;
+        dimensions.Y = _allPosY[0] - 10;
+        dimensions.W = _allPosW[_allPosW.length - 1] - dimensions.X + 10;
+        dimensions.H = _allPosH[_allPosH.length - 1] - dimensions.Y + 10;
+        return dimensions;
+    }
+    var _addStroke = function () {
+        var sctx = $selectionSurface.getContext("2d");
+        for (var n = 0; n < _activeElements.length; n++) {
+            if (_activeElements[n].childElements !== null) {
+                _addGroupStroke(n);
+            }
+            else {
+                if (_activeElements[n].width >= 2 && _activeElements[n].height >= 2) {
+                    var x1 = _activeElements[n].positionX;
+                    var y1 = _activeElements[n].positionY;
+                    var width = _activeElements[n].width;
+                    var height = _activeElements[n].height;
+                    var x2 = _activeElements[n].positionX + _activeElements[n].width;
+                    var y2 = _activeElements[n].positionY + _activeElements[n].height;
+                    var cx = x1 + (x2 - x1) / 2;
+                    var cy = y1 + (y2 - y1) / 2;
+                    var visilbleBorder = border - 5;
+                    sctx.beginPath();
+                    sctx.lineWidth = borderWidth;
+                    sctx.strokeStyle = selectionColor;
+                    sctx.setLineDash([10, 10]);
+                    sctx.fillStyle = selectionColor;
+                    sctx.strokeRect(x1, y1, width, height);
+                    sctx.fillRect(x1 - (visilbleBorder / 2), y1 - (visilbleBorder / 2), visilbleBorder, visilbleBorder);
+                    sctx.fillRect(x2 - (visilbleBorder / 2), y1 - (visilbleBorder / 2), visilbleBorder, visilbleBorder);
+                    sctx.fillRect(x2 - (visilbleBorder / 2), y2 - (visilbleBorder / 2), visilbleBorder, visilbleBorder);
+                    sctx.fillRect(x1 - (visilbleBorder / 2), y2 - (visilbleBorder / 2), visilbleBorder, visilbleBorder);
+                    sctx.fillRect(cx - (visilbleBorder / 2), y1 - (visilbleBorder / 2), visilbleBorder, visilbleBorder);
+                    sctx.fillRect(cx - (visilbleBorder / 2), y2 - (visilbleBorder / 2), visilbleBorder, visilbleBorder);
+                    sctx.fillRect(x1 - (visilbleBorder / 2), cy - (visilbleBorder / 2), visilbleBorder, visilbleBorder);
+                    sctx.fillRect(x2 - (visilbleBorder / 2), cy - (visilbleBorder / 2), visilbleBorder, visilbleBorder);
+                }
+            }
+        }
+    }
+    var _addGroupStroke = function (arrayPos) {
+        var sctx = $selectionSurface.getContext("2d");
+        var selBox = _activeElements[arrayPos]
+        if (selBox.width >= 2 && selBox.height >= 2) {
+            sctx.beginPath();
+            sctx.lineWidth = borderWidth;
+            sctx.strokeStyle = groupBoxColor;
+            sctx.strokeRect(selBox.positionX, selBox.positionY, selBox.width, selBox.height);
+            sctx.fillStyle = groupBoxColor;
+            sctx.closePath();
+            sctx.beginPath();
+            sctx.arc(selBox.positionX, selBox.positionY, arcRadius, 0, 2 * Math.PI);
+            sctx.fill();
+            sctx.closePath();
+            sctx.beginPath();
+            sctx.arc(selBox.positionX, selBox.positionY + selBox.height, arcRadius, 0, 2 * Math.PI);
+            sctx.fill();
+            sctx.closePath();
+            sctx.beginPath();
+            sctx.arc(selBox.positionX + selBox.width, selBox.positionY, arcRadius, 0, 2 * Math.PI);
+            sctx.fill();
+            sctx.closePath();
+            sctx.beginPath();
+            sctx.arc(selBox.positionX + selBox.width, selBox.positionY + selBox.height, arcRadius, 0, 2 * Math.PI);
+            sctx.fill();
+            sctx.closePath();
+            sctx.beginPath();
+            sctx.arc(selBox.positionX, selBox.positionY + (selBox.height / 2), arcRadius, 0, 2 * Math.PI);
+            sctx.fill();
+            sctx.closePath();
+            sctx.beginPath();
+            sctx.arc(selBox.positionX + selBox.width, selBox.positionY + (selBox.height / 2), arcRadius, 0, 2 * Math.PI);
+            sctx.fill();
+            sctx.closePath();
+            sctx.beginPath();
+            sctx.arc(selBox.positionX + (selBox.width / 2), selBox.positionY, arcRadius, 0, 2 * Math.PI);
+            sctx.fill();
+            sctx.closePath();
+            sctx.beginPath();
+            sctx.arc(selBox.positionX + (selBox.width / 2), selBox.positionY + selBox.height, arcRadius, 0, 2 * Math.PI);
+            sctx.fill();
+            sctx.closePath();
+        }
+    }
+    var _hoverProperty = function (x, y) {
+        var _resizeAnchorPoint = _hitResizeAnchor(x, y)
+        if (_resizeAnchorPoint == "TL") {
+            $dragSurface.style.cursor = "nw-resize";
+        }
+        if (_resizeAnchorPoint == "TR") {
+            $dragSurface.style.cursor = "ne-resize";
+        }
+        if (_resizeAnchorPoint == "BL") {
+            $dragSurface.style.cursor = "sw-resize";
+        }
+        if (_resizeAnchorPoint == "BR") {
+            $dragSurface.style.cursor = "se-resize";
+        }
+        if (_resizeAnchorPoint == "T") {
+            $dragSurface.style.cursor = "n-resize";
+        }
+        if (_resizeAnchorPoint == "R") {
+            $dragSurface.style.cursor = "e-resize";
+        }
+        if (_resizeAnchorPoint == "B") {
+            $dragSurface.style.cursor = "s-resize";
+        }
+        if (_resizeAnchorPoint == "L") {
+            $dragSurface.style.cursor = "w-resize";
+        }
+        if (_resizeAnchorPoint == "null") {
+            $dragSurface.style.cursor = "move";
+        }
+    }
+    var _getMousePos = function ($dragSurface, evt) {
+        var rect = $dragSurface.getBoundingClientRect();
+        return {
+            x: evt.clientX - rect.left,
+            y: evt.clientY - rect.top
+        };
+    }
+    var _gridLines = function () {
+        if (showGrid) {
+            var gctx = $gridSurface.getContext("2d");
+            var w = $gridSurface.width,
+                h = $gridSurface.height;
+            for (var i = 0.5; i < w || i < h; i += gridLineGap) {
+                gctx.moveTo(i, 0);
+                gctx.lineTo(i, h);
+                gctx.moveTo(0, i);
+                gctx.lineTo(w, i);
+                gctx.lineWidth = 1;
+                gctx.strokeStyle = gridLineColor;
+                gctx.stroke();
+            }
+        }
+    }
+    return {
+        initialize: initialize,
+        addImage: addImage,
+        bringToFront: bringToFront,
+        bringToBack: bringToBack
+    }
+}();
