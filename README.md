@@ -13,11 +13,12 @@ The below mentioned browsers is required to run the standalone application
 * [Google Chrome version 56.0 and above](https://www.google.co.in/chrome/browser/desktop/)
 * [Microsoft Edge ](https://www.microsoft.com/en-in/windows/microsoft-edge)
 * [Opera Browser version 43.0 and above](http://www.opera.com/?gclid=CIG7_6Dqr9MCFQkfaAodZ9MBOA)
+
 Any Text Editors:
 * [Visual studio code](https://code.visualstudio.com/)
 * [Sublime Text](https://www.sublimetext.com/)
 * [Notepad++](https://notepad-plus-plus.org/)
-  ...
+  
 ```
 Note: Please note that Mozilla Firefox browser will not respond to the program framework.
 ```
@@ -25,9 +26,9 @@ Note: Please note that Mozilla Firefox browser will not respond to the program f
 ### Instructions for deployment
 
 The below mentioned files are mandatory for running the whitecanvas.js
- Any image files for processing
- Jquery library files
- HTML 5.0 files
+ * Any image files for processing
+ * Jquery library files
+ * HTML 5.0 files
 
 ## Features
 
@@ -53,7 +54,7 @@ This canvas performs operations based on mouse events. Also there are options fo
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License
 
 ## Acknowledgments
 
